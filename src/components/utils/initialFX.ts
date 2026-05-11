@@ -62,4 +62,27 @@ export function initialFX() {
       delay: 0.1,
     }
   );
+
+  loopText(".landing-h2-info", ".landing-h2-info-1");
+  loopText(".landing-h2-1", ".landing-h2-2");
+}
+
+function loopText(selectorA: string, selectorB: string) {
+  const elA = document.querySelector<HTMLElement>(selectorA);
+  const elB = document.querySelector<HTMLElement>(selectorB);
+  if (!elA || !elB) return;
+
+  gsap.set(elA, { y: 0, opacity: 1 });
+  gsap.set(elB, { y: 80, opacity: 0 });
+
+  const tl = gsap.timeline({ repeat: -1, repeatDelay: 0 });
+  const hold = 3;
+
+  tl.to({}, { duration: hold })
+    .to(elA, { y: -80, opacity: 0, duration: 1, ease: "power3.inOut" }, ">")
+    .to(elB, { y: 0, opacity: 1, duration: 1, ease: "power3.inOut" }, "<")
+    .to({}, { duration: hold })
+    .to(elB, { y: -80, opacity: 0, duration: 1, ease: "power3.inOut" }, ">")
+    .to(elA, { y: 80, opacity: 0, duration: 0 }, "<")
+    .to(elA, { y: 0, opacity: 1, duration: 1, ease: "power3.inOut" }, "<");
 }
