@@ -8,6 +8,7 @@
   height: auto;
   width: var(--cWidth);
   margin: auto;
+  z-index: 12;
 }
 .about-me {
   padding: 50px 0px;
