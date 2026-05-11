@@ -2,9 +2,9 @@ import "./styles/Work.css";
 import WorkImage from "./WorkImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { useEffect } from "react";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
@@ -26,45 +26,43 @@ const projects = [
 ];
 
 const Work = () => {
-  useGSAP(() => {
-  let translateX: number = 0;
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      let translateX = 0;
 
-  function setTranslateX() {
-    const box = document.getElementsByClassName("work-box");
-    const rectLeft = document
-      .querySelector(".work-container")!
-      .getBoundingClientRect().left;
-    const rect = box[0].getBoundingClientRect();
-    const parentWidth = box[0].parentElement!.getBoundingClientRect().width;
-    let padding: number =
-      parseInt(window.getComputedStyle(box[0]).padding) / 2;
-    translateX = rect.width * box.length - (rectLeft + parentWidth) + padding;
-  }
+      function setTranslateX() {
+        const box = document.getElementsByClassName("work-box");
+        const rectLeft = document
+          .querySelector(".work-container")!
+          .getBoundingClientRect().left;
+        const rect = box[0].getBoundingClientRect();
+        const parentWidth = box[0].parentElement!.getBoundingClientRect().width;
+        const padding = parseInt(window.getComputedStyle(box[0]).padding) / 2;
+        translateX = rect.width * box.length - (rectLeft + parentWidth) + padding;
+      }
 
-  setTranslateX();
+      setTranslateX();
 
-  let timeline = gsap.timeline({
-    scrollTrigger: {
-      trigger: ".work-section",
-      start: "top top",
-      end: `+=${translateX}`, // Use actual scroll width
-      scrub: true,
-      pin: true,
-      id: "work",
-    },
-  });
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".work-section",
+          start: "top top",
+          end: `+=${translateX}`,
+          scrub: true,
+          pin: true,
+          id: "work",
+        },
+      });
 
-  timeline.to(".work-flex", {
-    x: -translateX,
-    ease: "none",
-  });
+      timeline.to(".work-flex", { x: -translateX, ease: "none" });
+    });
 
-  // Clean up (optional, good practice)
-  return () => {
-    timeline.kill();
-    ScrollTrigger.getById("work")?.kill();
-  };
-}, []);
+    return () => {
+      ctx.revert();
+      ScrollTrigger.getById("work")?.kill();
+    };
+  }, []);
+
   return (
     <div className="work-section" id="work">
       <div className="work-container section-container">
@@ -77,7 +75,6 @@ const Work = () => {
               <div className="work-info">
                 <div className="work-title">
                   <h3>0{index + 1}</h3>
-
                   <div>
                     <h4>
                       <a
